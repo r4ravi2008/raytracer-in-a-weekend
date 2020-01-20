@@ -2,9 +2,9 @@ use std::ops::{Add, Sub, Mul, Div};
 
 #[derive(Clone, Copy, Debug)]
 pub struct Vec3 {
-    pub x: f32,
-    pub y: f32,
-    pub z: f32,
+    pub x: f64,
+    pub y: f64,
+    pub z: f64,
 }
 
 impl Vec3 {
@@ -16,11 +16,20 @@ impl Vec3 {
         }
     }
 
-    pub fn squaredLength(self) -> f32 {
+    pub fn new(x: f64, y: f64, z: f64) -> Vec3 {
+        Vec3{
+            x: x,
+            y: y,
+            z: z
+        }
+
+    }
+
+    pub fn squaredLength(self) -> f64 {
         self.x * self.x + self.y * self.y + self.z * self.z
     }
 
-    pub fn length(self) -> f32 {
+    pub fn length(self) -> f64 {
         self.squaredLength().sqrt()
     }
 
@@ -28,7 +37,7 @@ impl Vec3 {
         self / self.length()
     }
 
-    pub fn dot(self, other: Vec3) -> f32 {
+    pub fn dot(self, other: Vec3) -> f64 {
         self.x * other.x + self.y * other.y + self.z * other.z
     }
 }
@@ -41,7 +50,7 @@ impl Add for Vec3 {
     }
 }
 
-impl Mul<Vec3> for f32 {
+impl Mul<Vec3> for f64 {
     type Output = Vec3;
 
     fn mul(self, rhs: Vec3) -> Vec3 {
@@ -49,10 +58,10 @@ impl Mul<Vec3> for f32 {
     }
 }
 
-impl Div<f32> for Vec3 {
+impl Div<f64> for Vec3 {
     type Output = Vec3;
 
-    fn div(self, t: f32) -> Vec3 {
+    fn div(self, t: f64) -> Vec3 {
         Vec3{ x: self.x / t, y: self.y / t, z: self.z / t  }
     }
 }
@@ -68,4 +77,10 @@ impl Sub for Vec3 {
         }
     }
 
+}
+
+impl PartialEq for Vec3 {
+    fn eq(&self, other: &Vec3) -> bool {
+        self.x == other.x && self.y == other.y && self.z == other.z
+    }
 }
