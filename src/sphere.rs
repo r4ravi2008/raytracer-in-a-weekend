@@ -33,13 +33,18 @@ impl Hittable for Sphere {
         let mut someHitRecord: Option<HitRecord> = None;
         if discriminant > 0.0 {
             let temp = (-b - discriminant.sqrt()) / a;
+//            println!("temp is {}",temp);
+//            println!("tmaxn and tmin is {} {}", tMax, tMin);
             if temp < tMax && temp > tMin {
                 let point = ray.pointAtParameter(temp);
-                return Some(HitRecord {
+//                println!("point is {:?}", point);
+                let hr = HitRecord {
                     t: temp,
                     p: point,
                     normal: (point - self.center) / self.radius,
-                })
+                };
+//                println!("hr is {:?}", hr);
+                return Some(hr)
             }
             let temp = (-b + discriminant.sqrt()) / a;
             if temp < tMax && temp > tMin {
