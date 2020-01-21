@@ -2,18 +2,21 @@ use super::vec3::Vec3;
 use super::hittable::Hittable;
 use super::hitRecord::HitRecord;
 use super::ray::Ray;
+use super::material::Material;
 
 #[derive(Clone, Debug)]
 pub struct Sphere {
     pub center: Vec3,
     pub radius: f64,
+    pub material: Material
 }
 
 impl Sphere {
-    pub fn new(center: Vec3, radius: f64) -> Sphere {
+    pub fn new(center: Vec3, radius: f64, material: Material) -> Sphere {
         Sphere {
             center: center,
-            radius: radius
+            radius: radius,
+            material: material
         }
     }
 }
@@ -21,29 +24,21 @@ impl Sphere {
 impl Hittable for Sphere {
     fn hit(&self, ray: &Ray, tMin: f64, tMax: f64) -> Option<HitRecord> {
         let oc = ray.origin() - self.center;
-//        println!("oc is {:?}", oc);
-        let a = ray.direction().dot(ray.direction());
-//        println!("a is {:?}", a);
-        let b = oc.dot(ray.direction());
-//        println!("b is {:?}", b);
-        let c = oc.dot(oc) - self.radius * self.radius;
-//        println!("c is {:?}", c);
+        let a = ray.direction().dot(&ray.direction());
+        let b = oc.dot(&ray.direction());
+        let c = oc.dot(&oc) - self.radius * self.radius;
         let discriminant = b * b -  a * c;
-//        println!("discriminant is {:?}", discriminant);
         let mut someHitRecord: Option<HitRecord> = None;
         if discriminant > 0.0 {
             let temp = (-b - discriminant.sqrt()) / a;
-//            println!("temp is {}",temp);
-//            println!("tmaxn and tmin is {} {}", tMax, tMin);
             if temp < tMax && temp > tMin {
                 let point = ray.pointAtParameter(temp);
-//                println!("point is {:?}", point);
                 let hr = HitRecord {
                     t: temp,
                     p: point,
                     normal: (point - self.center) / self.radius,
+                    material: self.material.clone()
                 };
-//                println!("hr is {:?}", hr);
                 return Some(hr)
             }
             let temp = (-b + discriminant.sqrt()) / a;
@@ -53,6 +48,7 @@ impl Hittable for Sphere {
                     t: temp,
                     p: point,
                     normal: (point - self.center) / self.radius,
+                    material: self.material.clone()
                 })
             }
         }

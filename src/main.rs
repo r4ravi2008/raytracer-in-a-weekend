@@ -6,6 +6,9 @@ mod hittableList;
 mod hitRecord;
 mod sphere;
 mod camera;
+mod material;
+mod lambertian;
+mod metal;
 
 use ray::Ray;
 use vec3::Vec3;
@@ -13,7 +16,11 @@ use hittableList::HittableSpheres;
 use sphere::Sphere;
 use hittable::Hittable;
 use rand::Rng;
-use crate::camera::Camera;
+use camera::Camera;
+use lambertian::Lambertian;
+use material::Material;
+use material::Scatter;
+use metal::Metal;
 
 fn random() -> f64 {
     rand::thread_rng().gen::<f64>()
@@ -29,7 +36,6 @@ fn randomInUnitSphere() -> Vec3 {
             random()
         ) - Vec3::new(1.0, 1.0, 1.0);
         let squaredLength = p.squaredLength();
-//        println!("squaredLength is: {}", squaredLength);
         if squaredLength <= 1.0 {
             done = true;
         }
@@ -37,22 +43,18 @@ fn randomInUnitSphere() -> Vec3 {
     p
 }
 
-fn color(r: &Ray, world: &HittableSpheres) -> Vec3 {
-//    print!("Calculating color for ray: {:?}", r);
-//    let mut b = randomInUnitSphere();
-//    println!("b is {:?}", b);
-    match world.hit(r, 0.0, std::f64::MAX) {
+fn color(r: &Ray, world: &HittableSpheres, depth: i32) -> Vec3 {
+    match world.hit(r, 0.0001, std::f64::MAX) {
+
         Some(hitRecord) => {
-            let target = hitRecord.p + hitRecord.normal + randomInUnitSphere();
-            0.5 * color(
-                &Ray {
-                    a: hitRecord.p,
-                    b: target - hitRecord.p
-                }, world
-            )
+            let optional = hitRecord.material.scatter(r, &hitRecord);
+            if(depth < 50 && optional.is_some()) {
+                let (attenuation, scattered) = optional.unwrap();
+                return attenuation * color(&scattered, world, depth + 1)
+            } else {
+                return Vec3::new(0.0, 0.0, 0.0)
+            }
         }
-
-
         None => {
             let unitDirection = r.direction().unitVector();
             let t = 0.5 * unitDirection.y + 1.0;
@@ -100,12 +102,24 @@ fn main() {
         spheres: vec![
             Sphere{
                 center: Vec3{x:0.0, y: 0.0, z: -1.0},
-                radius: 0.5
+                radius: 0.5,
+                material: Material::Lambertian(Lambertian::new(Vec3::new(0.8, 0.3, 0.3)))
             },
             Sphere{
                 center: Vec3{x:0.0, y: -100.5, z: -1.0},
-                radius: 100.0
-            }
+                radius: 100.0,
+                material: Material::Lambertian(Lambertian::new(Vec3::new(0.8, 0.8, 0.0)))
+            },
+            Sphere{
+                center: Vec3{x: 1.0, y: 0.0 , z: -1.0},
+                radius: 000.5,
+                material: Material::Metal(Metal::new(Vec3::new(0.8, 0.2, 0.2)))
+            },
+            Sphere{
+                center: Vec3{x: -1.0, y: 000.0, z: -1.0},
+                radius: 000.5,
+                material: Material::Metal(Metal::new(Vec3::new(0.8, 0.8, 0.8)))
+            },
         ]
     };
 
@@ -116,11 +130,11 @@ fn main() {
             for s in 0..ns {
                 let u = (i as f64 + random()) / nx as f64;
                 let v = (j as f64 + random()) / ny as f64;
-//                println!("{}s {}j {}i th iteration for camera", s, j, i);
                 let r = cam.getRay(u, v);
-                col = col + color(&r, &hittable)
+                col = col + color(&r, &hittable, 0)
             }
             col = col/ ns as f64;
+            col = Vec3::new(col.x.sqrt(), col.y.sqrt(), col.z.sqrt());
 
             let ir = (255.99 * col.x) as i32;
             let ig = (255.99 * col.y) as i32;
