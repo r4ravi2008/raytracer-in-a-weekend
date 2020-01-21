@@ -5,13 +5,15 @@ use super::vec3::Vec3;
 
 #[derive(Clone, Copy, Debug)]
 pub struct Metal {
-    albedo: Vec3
+    albedo: Vec3,
+    fuzz: f64
 }
 
 impl Metal {
-    pub fn new(v: Vec3) -> Metal{
+    pub fn new(v: Vec3, f: f64) -> Metal{
         Metal {
-            albedo: v
+            albedo: v,
+            fuzz: if (f < 1.0) {f} else {1.0}
         }
     }
 }
@@ -23,7 +25,7 @@ pub fn reflect(v: &Vec3, n: &Vec3) -> Vec3 {
 impl Scatter for Metal {
     fn scatter(&self, r: &Ray, hit_record: &HitRecord) -> Option<(Vec3, Ray)> {
         let reflected = reflect(&r.direction().unitVector(), &hit_record.normal);
-        let scattered = Ray::new(hit_record.p, reflected);
+        let scattered = Ray::new(hit_record.p, reflected + self.fuzz * super::randomInUnitSphere());
         if scattered.direction().dot(&hit_record.normal) > 0.0 {
             Some((self.albedo, scattered))
         } else {

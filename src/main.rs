@@ -113,12 +113,12 @@ fn main() {
             Sphere{
                 center: Vec3{x: 1.0, y: 0.0 , z: -1.0},
                 radius: 000.5,
-                material: Material::Metal(Metal::new(Vec3::new(0.8, 0.2, 0.2)))
+                material: Material::Metal(Metal::new(Vec3::new(0.8, 0.2, 0.2), 0.3))
             },
             Sphere{
                 center: Vec3{x: -1.0, y: 000.0, z: -1.0},
                 radius: 000.5,
-                material: Material::Metal(Metal::new(Vec3::new(0.8, 0.8, 0.8)))
+                material: Material::Metal(Metal::new(Vec3::new(0.8, 0.8, 0.8), 1.0))
             },
         ]
     };
