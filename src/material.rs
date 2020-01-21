@@ -1,4 +1,4 @@
-use super::hitRecord::HitRecord;
+use super::hit_record::HitRecord;
 use super::ray::Ray;
 use super::vec3::Vec3;
 use super::lambertian::Lambertian;

@@ -1,6 +1,6 @@
 use super::ray::Ray;
-use super::hitRecord::HitRecord;
+use super::hit_record::HitRecord;
 
 pub trait Hittable {
-   fn hit(&self, r: &Ray, tMin: f64, tMax: f64) -> Option<HitRecord>;
+   fn hit(&self, r: &Ray, t_min: f64, t_max: f64) -> Option<HitRecord>;
 }

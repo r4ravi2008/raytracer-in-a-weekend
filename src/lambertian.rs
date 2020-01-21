@@ -1,5 +1,5 @@
 use super::vec3::Vec3;
-use super::hitRecord::HitRecord;
+use super::hit_record::HitRecord;
 use super::ray::Ray;
 use super::material::Scatter;
 
@@ -17,8 +17,8 @@ impl Lambertian {
 }
 
 impl Scatter for Lambertian {
-    fn scatter(&self, r: &Ray, hit_record: &HitRecord) -> Option<(Vec3, Ray)> {
-        let target = hit_record.p + hit_record.normal + super::randomInUnitSphere();
+    fn scatter(&self, _r: &Ray, hit_record: &HitRecord) -> Option<(Vec3, Ray)> {
+        let target = hit_record.p + hit_record.normal + super::random_in_unit_sphere();
         let scattered = Ray::new(hit_record.p, target - hit_record.p);
         Some((self.albedo, scattered))
     }

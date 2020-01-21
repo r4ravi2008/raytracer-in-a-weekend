@@ -25,15 +25,15 @@ impl Vec3 {
 
     }
 
-    pub fn squaredLength(&self) -> f64 {
+    pub fn squared_length(&self) -> f64 {
         self.x * self.x + self.y * self.y + self.z * self.z
     }
 
     pub fn length(&self) -> f64 {
-        self.squaredLength().sqrt()
+        self.squared_length().sqrt()
     }
 
-    pub fn unitVector(&self) -> Vec3 {
+    pub fn unit_vector(&self) -> Vec3 {
         Vec3::new(
             self.x/ self.length(),
             self.y/ self.length(),

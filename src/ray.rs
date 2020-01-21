@@ -18,7 +18,7 @@ impl Ray {
         self.b
     }
 
-    pub fn pointAtParameter(&self, t: f64) -> Vec3 {
+    pub fn point_at_parameter(&self, t: f64) -> Vec3 {
         self.a + t * self.b
     }
 }
@@ -51,6 +51,6 @@ fn test_param() {
     let direction: Vec3 = Vec3::new(3.0, 4.0, 1.0);
     let ray: Ray = Ray::new(origin, direction);
     let point: Vec3 = Vec3::new(7.0, 10.0, 5.0);
-    assert_eq!(ray.pointAtParameter(2.0), point);
+    assert_eq!(ray.point_at_parameter(2.0), point);
 }
 
