@@ -9,6 +9,7 @@ mod camera;
 mod material;
 mod lambertian;
 mod metal;
+mod dielectric;
 
 use ray::Ray;
 use vec3::Vec3;
@@ -21,6 +22,7 @@ use lambertian::Lambertian;
 use material::Material;
 use material::Scatter;
 use metal::Metal;
+use dielectric::Dielectric;
 
 fn random() -> f64 {
     rand::thread_rng().gen::<f64>()
@@ -80,7 +82,7 @@ fn main() {
     let hittable = HittableSpheres {
         spheres: vec![
             Sphere{
-                center: Vec3{x:0.0, y: 0.0, z: -1.0},
+                center: Vec3{x:0.0, y: 0.0, z: -3.0},
                 radius: 0.5,
                 material: Material::Lambertian(Lambertian::new(Vec3::new(0.8, 0.3, 0.3)))
             },
@@ -90,15 +92,20 @@ fn main() {
                 material: Material::Lambertian(Lambertian::new(Vec3::new(0.8, 0.8, 0.0)))
             },
             Sphere{
-                center: Vec3{x: 1.0, y: 0.0 , z: -1.0},
+                center: Vec3{x: 1.0, y: 0.0 , z: -3.0},
                 radius: 000.5,
                 material: Material::Metal(Metal::new(Vec3::new(0.8, 0.2, 0.2), 0.0))
             },
             Sphere{
                 center: Vec3{x: -1.0, y: 000.0, z: -1.0},
                 radius: 000.5,
-                material: Material::Metal(Metal::new(Vec3::new(0.8, 0.8, 0.8), 1.0))
+                material: Material::Dielectric(Dielectric::new(2.0))
             },
+            Sphere{
+                center: Vec3{x: 0.4, y: -0.2, z: -0.9},
+                radius: 0.2,
+                material: Material::Metal(Metal::new(Vec3::new(0.2, 0.2, 0.8), 0.0))
+            }
         ]
     };
 
