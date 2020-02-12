@@ -46,7 +46,7 @@ fn random_in_unit_sphere() -> Vec3 {
 }
 
 fn color(r: &Ray, world: &HittableSpheres, depth: i32) -> Vec3 {
-    match world.hit(r, 0.0001, std::f64::MAX) {
+    match world.hit(r, 0.001, std::f64::MAX) {
 
         Some(hit_record) => {
             let optional = hit_record.material.scatter(r, &hit_record);
